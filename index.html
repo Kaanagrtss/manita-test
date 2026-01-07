@@ -5,14 +5,48 @@
     <title>Manita Testi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { margin: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #ff9a9e, #fad0c4); min-height: 100vh; display: flex; justify-content: center; padding: 20px; }
+        body { 
+            margin: 0; 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4); 
+            min-height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            padding: 20px; 
+        }
         .container { width: 100%; max-width: 500px; }
-        .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,.1); text-align: center; }
+        .card { 
+            background: white; 
+            border-radius: 16px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,.1); 
+            text-align: center; 
+        }
         h1 { color: #ff4d6d; }
-        input, select { width: 100%; padding: 10px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
-        button { width: 100%; padding: 14px; background: #ff4d6d; color: white; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; }
+        h3 { color: #333; margin-top: 0; }
+        input, select { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 10px; 
+            border-radius: 8px; 
+            border: 1px solid #ccc; 
+            box-sizing: border-box; 
+        }
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background: #ff4d6d; 
+            color: white; 
+            border: none; 
+            border-radius: 25px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+        button:hover { background: #e63958; }
         .hidden { display: none !important; }
-        .success { color: green; font-weight: bold; margin-top: 15px; display: none; }
+        .success { color: #28a745; font-weight: bold; margin-top: 15px; display: none; }
     </style>
 </head>
 <body>
@@ -20,15 +54,18 @@
 <div class="container">
     <div id="home-page" class="card">
         <h1>💖 Manita Testi</h1>
-        <p>Sevgilin senin hakkında bir test hazırlasın, sen de çöz bakalım 😏</p>
+        <p>Sevgilin senin hakkında bir test hazırlasın,<br>sen de çöz bakalım kaç puan alacaksın 😏</p>
         <button onclick="startApp()">Teste Başla</button>
     </div>
 
     <div id="create-page" class="hidden">
-        <div class="card"><h1>🛠️ Soruları Yaz</h1></div>
+        <div class="card">
+            <h1>🛠️ Soruları Hazırla</h1>
+            <p>15 soruyu doldur ve kaydet.</p>
+        </div>
         <form id="testForm"></form>
-        <button onclick="saveTest()">Testi Kaydet</button>
-        <div class="success" id="successMsg">✅ Başarıyla kaydedildi!</div>
+        <button onclick="saveTest()">✅ Testi Kaydet</button>
+        <div class="success" id="successMsg">✅ Test başarıyla tarayıcıya kaydedildi!</div>
     </div>
 </div>
 
@@ -40,26 +77,35 @@
             form.innerHTML += `
             <div class="card" style="text-align:left;">
                 <h3>Soru ${i}</h3>
-                <input id="q${i}" placeholder="Soru yaz">
+                <input id="q${i}" placeholder="Soruyu yazın">
                 <input id="a${i}" placeholder="A şıkkı">
                 <input id="b${i}" placeholder="B şıkkı">
                 <input id="c${i}" placeholder="C şıkkı">
                 <input id="d${i}" placeholder="D şıkkı">
                 <select id="correct${i}">
-                    <option value="">Doğru Şık</option>
-                    <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                    <option value="">Doğru Cevabı Seç</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
                 </select>
             </div>`;
         }
         document.getElementById("home-page").classList.add("hidden");
         document.getElementById("create-page").classList.remove("hidden");
+        window.scrollTo(0,0);
     }
 
     function saveTest() {
         let questions = [];
+        let isComplete = true;
+
         for(let i=1; i<=15; i++) {
+            const questionText = document.getElementById(`q${i}`).value;
+            if(!questionText) isComplete = false;
+
             questions.push({
-                question: document.getElementById(`q${i}`).value,
+                question: questionText,
                 A: document.getElementById(`a${i}`).value,
                 B: document.getElementById(`b${i}`).value,
                 C: document.getElementById(`c${i}`).value,
@@ -67,10 +113,17 @@
                 correct: document.getElementById(`correct${i}`).value
             });
         }
+
+        if(!isComplete) {
+            alert("Lütfen soruları boş bırakmayın!");
+            return;
+        }
+
         localStorage.setItem("manitaTest", JSON.stringify(questions));
         document.getElementById("successMsg").style.display = "block";
-        alert("Kaydedildi!");
+        alert("Harika! Testin başarıyla kaydedildi.");
     }
 </script>
+
 </body>
 </html>
