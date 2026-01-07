@@ -5,69 +5,169 @@
     <title>Manitanı Ne Kadar Tanıyorsun?</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        /* Genel Stil Ayarları */
         body {
-            font-family: Arial, sans-serif;
-            background: #ffe6f0;
-            text-align: center;
-            padding: 40px;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        h1 { color: #d63384; }
+
         .container {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            display: inline-block;
-            max-width: 500px;
             width: 100%;
+            max-width: 500px;
         }
+
+        /* Kart Yapısı */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,.15);
+            text-align: center;
+        }
+
+        h1 { color: #d63384; margin-bottom: 10px; }
+        h3 { color: #ff4d6d; margin-bottom: 15px; text-align: left; }
+        p { font-size: 18px; color: #555; line-height: 1.6; }
+
+        /* Input ve Form Elemanları */
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            box-sizing: border-box; /* Kaymayı önler */
+        }
+
         button {
-            background: #d63384; color: white; border: none;
-            padding: 15px 25px; font-size: 18px; border-radius: 8px;
-            cursor: pointer; margin-top: 20px;
+            width: 100%;
+            padding: 16px;
+            background: #d63384;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
         }
+
+        button:hover { background: #b82c6e; transform: scale(1.02); }
+
         /* Gizleme Sınıfı */
-        .hidden {
+        .hidden { display: none !important; }
+
+        .success {
+            text-align: center;
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 15px;
             display: none;
-        }
-        input {
-            padding: 10px; width: 80%; margin: 10px 0;
-            border: 1px solid #ddd; border-radius: 5px;
         }
     </style>
 </head>
 <body>
 
-    <div id="home-page" class="container">
-        <h1>💘 Manitanı Ne Kadar Tanıyorsun?</h1>
-        <p>Sevgilin senin hakkında bir test hazırlasın,<br>sen de çöz bakalım kaç puan alacaksın 😏</p>
-        <button onclick="showCreatePage()">Teste Başla</button>
-    </div>
+    <div class="container">
+        
+        <div id="home-page" class="card">
+            <h1>💘 Manita Testi</h1>
+            <p>
+                Sevgilin senin hakkında bir test hazırlasın,<br>
+                sen de çöz bakalım kaç puan alacaksın 😏
+            </p>
+            <br>
+            <button onclick="startApp()">Teste Başla</button>
+        </div>
 
-    <div id="create-page" class="container hidden">
-        <h1>🛠️ Testini Oluştur</h1>
-        <p>Aşağıya manitanın cevaplaması için sorularını yaz:</p>
-        <input type="text" placeholder="1. Soru: En sevdiğim renk?">
-        <input type="text" placeholder="2. Soru: İlk nerede tanıştık?">
-        <br>
-        <button onclick="alert('Test Kaydedildi!')">Testi Paylaş</button>
-        <br>
-        <small style="cursor:pointer; color:blue;" onclick="showHomePage()">Geri Dön</small>
+        <div id="create-page" class="hidden">
+            <div class="card">
+                <h1>🛠️ Soruları Hazırla</h1>
+                <p>Manitanın cevaplaması için 15 soru yaz:</p>
+            </div>
+            
+            <form id="testForm"></form>
+
+            <button onclick="saveTest()">✅ Testi Kaydet ve Link Al</button>
+            <div class="success" id="successMsg">🎉 Test başarıyla kaydedildi!</div>
+            
+            <div style="text-align:center; margin-top: 20px;">
+                <button onclick="location.reload()" style="background:#888; padding: 10px; font-size: 14px; width: auto;">Vazgeç / Sıfırla</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        function showCreatePage() {
-            // Giriş sayfasını gizle
-            document.getElementById('home-page').classList.add('hidden');
-            // Create sayfasını göster
-            document.getElementById('create-page').classList.remove('hidden');
+        const form = document.getElementById("testForm");
+
+        // Sayfa ilk açıldığında soruları oluştur ama gösterme
+        function generateQuestions() {
+            form.innerHTML = ""; // İçini temizle
+            for(let i=1; i<=15; i++){
+                form.innerHTML += `
+                <div class="card">
+                    <h3>Soru ${i}</h3>
+                    <input id="q${i}" placeholder="Soru yaz (Örn: En sevdiğim renk?)">
+                    <input id="a${i}" placeholder="A şıkkı">
+                    <input id="b${i}" placeholder="B şıkkı">
+                    <input id="c${i}" placeholder="C şıkkı">
+                    <input id="d${i}" placeholder="D şıkkı">
+                    <select id="correct${i}">
+                        <option value="">Doğru cevabı seç</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                </div>
+                `;
+            }
         }
 
-        function showHomePage() {
-            // Create sayfasını gizle
-            document.getElementById('create-page').classList.add('hidden');
-            // Giriş sayfasını göster
-            document.getElementById('home-page').classList.remove('hidden');
+        // Girişten Create sayfasına geçiş
+        function startApp() {
+            generateQuestions();
+            document.getElementById("home-page").classList.add("hidden");
+            document.getElementById("create-page").classList.remove("hidden");
+            window.scrollTo(0,0); // Sayfayı en üste kaydır
+        }
+
+        // Verileri Kaydetme
+        function saveTest() {
+            let questions = [];
+            let allFilled = true;
+
+            for(let i=1; i<=15; i++) {
+                const qValue = document.getElementById(q${i}).value;
+                if(!qValue) allFilled = false;
+
+                questions.push({
+                    question: qValue,
+                    A: document.getElementById(a${i}).value,
+                    B: document.getElementById(b${i}).value,
+                    C: document.getElementById(c${i}).value,
+                    D: document.getElementById(d${i}).value,
+                    correct: document.getElementById(correct${i}).value
+                });
+            }
+
+            if(!allFilled) {
+                alert("Lütfen en azından soruların başlıklarını boş bırakma!");
+                return;
+            }
+
+            localStorage.setItem("manitaTest", JSON.stringify(questions));
+            document.getElementById("successMsg").style.display = "block";
+            alert("Testin tarayıcıya kaydedildi! Şimdi bu testi sevgiline çözdürme kısmını yapabilirsin.");
         }
     </script>
 
