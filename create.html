@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Manita Test</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #111;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* Emoji arka plan */
+    .emoji-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      font-size: 40px;
+      opacity: 0.15;
+      line-height: 1.5;
+      text-align: center;
+      animation: float 20s linear infinite;
+    }
+
+    @keyframes float {
+      from { transform: translateY(0); }
+      to { transform: translateY(-200px); }
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      background: rgba(0,0,0,0.75);
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      width: 300px;
+      box-shadow: 0 0 30px rgba(255,0,0,0.4);
+    }
+
+    h1 {
+      margin-bottom: 15px;
+    }
+
+    p {
+      margin-bottom: 20px;
+      opacity: 0.9;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      background: linear-gradient(45deg, #ff004c, #ff7a00);
+      color: white;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="emoji-bg">
+    😡 🥰 😘 😡 🥰 😘 😡 🥰 😘 😡 🥰 😘 😡 🥰 😘 😡 🥰 😘 <br>
+    🥰 😡 😘 🥰 😡 😘 🥰 😡 😘 🥰 😡 😘 🥰 😡 😘 <br>
+    😘 🥰 😡 😘 🥰 😡 😘 🥰 😡 😘 🥰 😡 😘 <br>
+  </div>
+
+  <div class="card">
+    <h1>Manita Test 😏</h1>
+    <p>Bu site tamamen deneme amaçlıdır</p>
+    <button>Tıkla Bakalım</button>
+  </div>
+
+</body>
+</html>
