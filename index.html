@@ -2,51 +2,19 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Manita Testi</title>
+    <title>Manita Testi 💘</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { 
-            margin: 0; 
-            font-family: Arial, sans-serif; 
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4); 
-            min-height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            padding: 20px; 
-        }
+        body { margin: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, #ff9a9e, #fad0c4); min-height: 100vh; display: flex; justify-content: center; padding: 20px; }
         .container { width: 100%; max-width: 500px; }
-        .card { 
-            background: white; 
-            border-radius: 16px; 
-            padding: 20px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,.1); 
-            text-align: center; 
-        }
+        .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,.1); text-align: center; }
         h1 { color: #ff4d6d; }
-        h3 { color: #333; margin-top: 0; }
-        input, select { 
-            width: 100%; 
-            padding: 12px; 
-            margin-bottom: 10px; 
-            border-radius: 8px; 
-            border: 1px solid #ccc; 
-            box-sizing: border-box; 
-        }
-        button { 
-            width: 100%; 
-            padding: 14px; 
-            background: #ff4d6d; 
-            color: white; 
-            border: none; 
-            border-radius: 25px; 
-            font-size: 16px; 
-            cursor: pointer; 
-            font-weight: bold;
-        }
-        button:hover { background: #e63958; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+        button { width: 100%; padding: 14px; background: #ff4d6d; color: white; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .option-btn { width:100%; padding:12px; background: #f8f9fa; color: #333; border: 2px solid #ff9a9e; margin-bottom: 8px; text-align: left; border-radius: 12px; cursor:pointer; font-size:16px; }
+        .option-btn:hover { background: #ffe6f0; }
         .hidden { display: none !important; }
-        .success { color: #28a745; font-weight: bold; margin-top: 15px; display: none; }
+        #share-box { background: #f1f3f5; padding: 15px; border-radius: 10px; word-break: break-all; font-size: 11px; margin-top: 10px; border: 1px dashed #d63384; color: #555; }
     </style>
 </head>
 <body>
@@ -54,41 +22,71 @@
 <div class="container">
     <div id="home-page" class="card">
         <h1>💖 Manita Testi</h1>
-        <p>Sevgilin senin hakkında bir test hazırlasın,<br>sen de çöz bakalım kaç puan alacaksın 😏</p>
-        <button onclick="startApp()">Teste Başla</button>
+        <p>Bakalım sevgilin seni ne kadar tanıyor?<br>Önce soruları hazırla, sonra linki ona gönder!</p>
+        <button onclick="showCreate()">Soruları Hazırla</button>
     </div>
 
     <div id="create-page" class="hidden">
-        <div class="card">
-            <h1>🛠️ Soruları Hazırla</h1>
-            <p>15 soruyu doldur ve kaydet.</p>
-        </div>
+        <div class="card"><h1>🛠️ Soruları Yaz</h1><p>15 soruyu doldur ve bitir.</p></div>
         <form id="testForm"></form>
-        <button onclick="saveTest()">✅ Testi Kaydet</button>
-        <div class="success" id="successMsg">✅ Test başarıyla tarayıcıya kaydedildi!</div>
+        <button onclick="generateLink()">✅ Testi Bitir ve Link Al</button>
+    </div>
+
+    <div id="share-page" class="hidden">
+        <div class="card">
+            <h1>🎉 Test Hazır!</h1>
+            <p>Aşağıdaki linki kopyala ve manitana gönder:</p>
+            <div id="share-box"></div>
+            <button onclick="copyLink()">Linki Kopyala</button>
+        </div>
+    </div>
+
+    <div id="solve-page" class="hidden">
+        <div class="card">
+            <h2 id="current-question-title">Soru 1</h2>
+            <p id="display-question-text" style="font-size: 20px; font-weight: bold; color: #d63384;"></p>
+            <div id="options-container"></div>
+        </div>
+    </div>
+
+    <div id="result-page" class="hidden card">
+        <h1>🏆 Test Bitti!</h1>
+        <p id="score-text" style="font-size: 24px; color: #333;"></p>
+        <button onclick="location.href=location.pathname">Ben de Test Yapmak İstiyorum!</button>
     </div>
 </div>
 
 <script>
-    function startApp() {
+    let savedQuestions = [];
+    let currentQIndex = 0;
+    let score = 0;
+
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const data = urlParams.get('test');
+        if (data) {
+            // BURASI: Link açıldığı an çıkan uyarı mesajı
+            alert("Hele bi sen yapama bak ne oluyor ayvayı yersin! 😈");
+            
+            try {
+                savedQuestions = JSON.parse(atob(data));
+                showSolvePage();
+            } catch(e) {
+                alert("Link hatalı veya bozulmuş!");
+            }
+        }
+    };
+
+    function showCreate() {
         const form = document.getElementById("testForm");
         form.innerHTML = "";
         for(let i=1; i<=15; i++){
-            form.innerHTML += `
-            <div class="card" style="text-align:left;">
-                <h3>Soru ${i}</h3>
-                <input id="q${i}" placeholder="Soruyu yazın">
-                <input id="a${i}" placeholder="A şıkkı">
-                <input id="b${i}" placeholder="B şıkkı">
-                <input id="c${i}" placeholder="C şıkkı">
-                <input id="d${i}" placeholder="D şıkkı">
-                <select id="correct${i}">
-                    <option value="">Doğru Cevabı Seç</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                </select>
+            form.innerHTML += `<div class="card" style="text-align:left;">
+                <h3 style="color:#ff4d6d">Soru ${i}</h3>
+                <input id="q${i}" placeholder="Soruyu yaz (Örn: En sevdiğim film?)">
+                <input id="a${i}" placeholder="A Şıkkı"> <input id="b${i}" placeholder="B Şıkkı">
+                <input id="c${i}" placeholder="C Şıkkı"> <input id="d${i}" placeholder="D Şıkkı">
+                <select id="correct${i}"><option value="">Doğru Cevabı Seç</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
             </div>`;
         }
         document.getElementById("home-page").classList.add("hidden");
@@ -96,32 +94,70 @@
         window.scrollTo(0,0);
     }
 
-    function saveTest() {
+    function generateLink() {
         let questions = [];
-        let isComplete = true;
-
+        let check = true;
         for(let i=1; i<=15; i++) {
-            const questionText = document.getElementById(`q${i}`).value;
-            if(!questionText) isComplete = false;
-
+            const q = document.getElementById(`q${i}`).value;
+            const ans = document.getElementById(`correct${i}`).value;
+            if(!q || !ans) check = false;
             questions.push({
-                question: questionText,
-                A: document.getElementById(`a${i}`).value,
-                B: document.getElementById(`b${i}`).value,
-                C: document.getElementById(`c${i}`).value,
-                D: document.getElementById(`d${i}`).value,
-                correct: document.getElementById(`correct${i}`).value
+                q: q, a: document.getElementById(`a${i}`).value,
+                b: document.getElementById(`b${i}`).value, c: document.getElementById(`c${i}`).value,
+                d: document.getElementById(`d${i}`).value, ans: ans
             });
         }
+        if(!check) { alert("Lütfen tüm soruları ve doğru şıkları doldur!"); return; }
 
-        if(!isComplete) {
-            alert("Lütfen soruları boş bırakmayın!");
-            return;
-        }
+        const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(questions))));
+        const shareLink = window.location.origin + window.location.pathname + "?test=" + encodedData;
+        
+        document.getElementById("share-box").innerText = shareLink;
+        document.getElementById("create-page").classList.add("hidden");
+        document.getElementById("share-page").classList.remove("hidden");
+    }
 
-        localStorage.setItem("manitaTest", JSON.stringify(questions));
-        document.getElementById("successMsg").style.display = "block";
-        alert("Harika! Testin başarıyla kaydedildi.");
+    function copyLink() {
+        const link = document.getElementById("share-box").innerText;
+        navigator.clipboard.writeText(link).then(() => {
+            alert("Link kopyalandı! Sevgiline gönderip onu terletme vakti.");
+        });
+    }
+
+    function showSolvePage() {
+        document.getElementById("home-page").classList.add("hidden");
+        document.getElementById("solve-page").classList.remove("hidden");
+        displayQuestion();
+    }
+
+    function displayQuestion() {
+        if (currentQIndex >= savedQuestions.length) { showResult(); return; }
+        const qData = savedQuestions[currentQIndex];
+        document.getElementById("current-question-title").innerText = `Soru ${currentQIndex + 1} / 15`;
+        document.getElementById("display-question-text").innerText = qData.q;
+        
+        const container = document.getElementById("options-container");
+        container.innerHTML = "";
+        ["A","B","C","D"].forEach(opt => {
+            const btn = document.createElement("button");
+            btn.className = "option-btn";
+            btn.innerText = opt + ") " + qData[opt.toLowerCase()];
+            btn.onclick = () => checkAnswer(opt);
+            container.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selected) {
+        if (selected === savedQuestions[currentQIndex].ans) score++;
+        currentQIndex++;
+        displayQuestion();
+    }
+
+    function showResult() {
+        document.getElementById("solve-page").classList.add("hidden");
+        document.getElementById("result-page").classList.remove("hidden");
+        let extra = score > 10 ? "Vay be! Helal olsun." : "Ayvayı yedin demiştim...";
+        document.getElementById("score-text").innerHTML = `15 sorudan <b>${score}</b> tanesini doğru bildin!<br><br><small>${extra}</small>`;
     }
 </script>
 
