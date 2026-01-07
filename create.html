@@ -1,89 +1,111 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>Soru Oluştur</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Test Oluştur</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .card {
-      background: white;
-      width: 90%;
-      max-width: 420px;
-      padding: 25px;
-      border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-
-    h1 {
-      text-align: center;
-      color: #ff4d6d;
-      margin-bottom: 20px;
-      font-size: 24px;
-    }
-
-    label {
-      font-size: 14px;
-      margin-bottom: 5px;
-      display: block;
-      color: #444;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #ff4d6d;
-      color: white;
-      border: none;
-      border-radius: 25px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #ff335a;
-    }
-  </style>
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+}
+.container{
+  padding:20px;
+}
+.card{
+  background:white;
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 8px 20px rgba(0,0,0,.2);
+}
+h1{
+  text-align:center;
+  color:#ff4d6d;
+}
+h3{
+  margin-bottom:10px;
+}
+input, select{
+  width:100%;
+  padding:10px;
+  margin-bottom:8px;
+  border-radius:8px;
+  border:1px solid #ccc;
+}
+button{
+  width:100%;
+  padding:14px;
+  background:#ff4d6d;
+  color:white;
+  border:none;
+  border-radius:25px;
+  font-size:16px;
+}
+.success{
+  text-align:center;
+  color:green;
+  margin-top:15px;
+  display:none;
+}
+</style>
 </head>
+
 <body>
+<div class="container">
+<h1>💖 15 Soruluk Manita Testi</h1>
 
+<form id="testForm"></form>
+
+<button onclick="saveTest()">Testi Kaydet</button>
+<div class="success" id="successMsg">✅ Test başarıyla kaydedildi</div>
+</div>
+
+<script>
+const form = document.getElementById("testForm");
+
+for(let i=1;i<=15;i++){
+  form.innerHTML += `
   <div class="card">
-    <h1>💖 Soru Oluştur</h1>
+    <h3>Soru ${i}</h3>
+    <input id="q${i}" placeholder="Soru yaz">
 
-    <label>Soru</label>
-    <input type="text" placeholder="Manitanın en sevdiği yemek ne?">
+    <input id="a${i}" placeholder="A şıkkı">
+    <input id="b${i}" placeholder="B şıkkı">
+    <input id="c${i}" placeholder="C şıkkı">
+    <input id="d${i}" placeholder="D şıkkı">
 
-    <label>Doğru Cevap</label>
-    <input type="text" placeholder="Mantı">
-
-    <label>Yanlış Cevap 1</label>
-    <input type="text" placeholder="Pizza">
-
-    <label>Yanlış Cevap 2</label>
-    <input type="text" placeholder="Hamburger">
-
-    <button>Kaydet</button>
+    <select id="correct${i}">
+      <option value="">Doğru şık seç</option>
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="C">C</option>
+      <option value="D">D</option>
+    </select>
   </div>
+  `;
+}
+
+function saveTest(){
+  let questions = [];
+
+  for(let i=1;i<=15;i++){
+    questions.push({
+      question: document.getElementById(q${i}).value,
+      A: document.getElementById(a${i}).value,
+      B: document.getElementById(b${i}).value,
+      C: document.getElementById(c${i}).value,
+      D: document.getElementById(d${i}).value,
+      correct: document.getElementById(correct${i}).value
+    });
+  }
+
+  localStorage.setItem("manitaTest", JSON.stringify(questions));
+  document.getElementById("successMsg").style.display = "block";
+}
+</script>
 
 </body>
 </html>
